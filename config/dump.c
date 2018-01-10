@@ -84,6 +84,7 @@ size_t escape_string(struct Buffer *buf, const char *src)
  */
 size_t pretty_var(struct Buffer *buf, const char *str)
 {
+  //QWQ swap params?
   if (!buf || !str)
     return 0;
 
