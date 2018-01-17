@@ -30,7 +30,7 @@
 #include <stddef.h>
 #include <limits.h>
 #include <stdint.h>
-// #include "mutt/address.h"
+#include "mutt/address.h"
 #include "mutt/buffer.h"
 #include "mutt/memory.h"
 #include "mutt/string2.h"
@@ -80,7 +80,7 @@ static int address_string_set(const struct ConfigSet *cs, void *var, struct Conf
   /* An empty address "" will be stored as NULL */
   if (var && value && (value[0] != '\0'))
   {
-    // addr = mutt_addr_parse_list(NULL, value);
+    addr = mutt_addr_parse_list(NULL, value);
   }
 
   int rc;
