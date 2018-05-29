@@ -1654,7 +1654,7 @@ static int nntp_open_message(struct Context *ctx, struct Message *msg, int msgno
   }
   else
   {
-    char buf[_POSIX_PATH_MAX];
+    char buf[PATH_MAX];
     /* don't try to fetch article from removed newsgroup */
     if (nntp_data->deleted)
       return -1;

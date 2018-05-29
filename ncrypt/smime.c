@@ -75,9 +75,9 @@ struct SmimeCommandContext
 char SmimePass[STRING];
 time_t SmimeExptime = 0; /* when does the cached passphrase expire? */
 
-static char SmimeKeyToUse[_POSIX_PATH_MAX] = { 0 };
-static char SmimeCertToUse[_POSIX_PATH_MAX];
-static char SmimeIntermediateToUse[_POSIX_PATH_MAX];
+static char SmimeKeyToUse[PATH_MAX] = { 0 };
+static char SmimeCertToUse[PATH_MAX];
+static char SmimeIntermediateToUse[PATH_MAX];
 
 static void smime_free_key(struct SmimeKey **keylist)
 {
@@ -176,7 +176,7 @@ static const char *fmt_smime_command(char *buf, size_t buflen, size_t col, int c
     {
       if (!optional)
       {
-        char path[_POSIX_PATH_MAX];
+        char path[PATH_MAX];
         char buf1[LONG_STRING], buf2[LONG_STRING];
         struct stat sb;
 
@@ -620,7 +620,7 @@ static struct SmimeKey *smime_parse_key(char *buf)
 
 static struct SmimeKey *smime_get_candidates(char *search, short public)
 {
-  char index_file[_POSIX_PATH_MAX];
+  char index_file[PATH_MAX];
   char buf[LONG_STRING];
   struct SmimeKey *key = NULL, *results = NULL;
   struct SmimeKey **results_end = &results;
@@ -960,7 +960,7 @@ char *smime_find_keys(struct Address *addrlist, int oppenc_mode)
 static int smime_handle_cert_email(char *certificate, char *mailbox, int copy,
                                    char ***buffer, int *num)
 {
-  char tmpfname[_POSIX_PATH_MAX];
+  char tmpfname[PATH_MAX];
   char email[STRING];
   int rc = -1, count = 0;
   pid_t thepid;
@@ -1054,8 +1054,8 @@ static int smime_handle_cert_email(char *certificate, char *mailbox, int copy,
 
 static char *smime_extract_certificate(char *infile)
 {
-  char pk7out[_POSIX_PATH_MAX], certfile[_POSIX_PATH_MAX];
-  char tmpfname[_POSIX_PATH_MAX];
+  char pk7out[PATH_MAX], certfile[PATH_MAX];
+  char tmpfname[PATH_MAX];
   pid_t thepid;
   int empty;
 
@@ -1159,8 +1159,8 @@ static char *smime_extract_certificate(char *infile)
 
 static char *smime_extract_signer_certificate(char *infile)
 {
-  char certfile[_POSIX_PATH_MAX];
-  char tmpfname[_POSIX_PATH_MAX];
+  char certfile[PATH_MAX];
+  char tmpfname[PATH_MAX];
   pid_t thepid;
   int empty;
 
@@ -1224,7 +1224,7 @@ static char *smime_extract_signer_certificate(char *infile)
  */
 void smime_invoke_import(char *infile, char *mailbox)
 {
-  char tmpfname[_POSIX_PATH_MAX], *certfile = NULL, buf[STRING];
+  char tmpfname[PATH_MAX], *certfile = NULL, buf[STRING];
   FILE *smimein = NULL;
 
   mutt_mktemp(tmpfname, sizeof(tmpfname));
@@ -1296,7 +1296,7 @@ void smime_invoke_import(char *infile, char *mailbox)
 
 int smime_verify_sender(struct Header *h)
 {
-  char *mbox = NULL, *certfile = NULL, tempfname[_POSIX_PATH_MAX];
+  char *mbox = NULL, *certfile = NULL, tempfname[PATH_MAX];
   int retval = 1;
 
   mutt_mktemp(tempfname, sizeof(tempfname));
@@ -1377,8 +1377,8 @@ static pid_t smime_invoke_sign(FILE **smimein, FILE **smimeout, FILE **smimeerr,
 struct Body *smime_build_smime_entity(struct Body *a, char *certlist)
 {
   char buf[LONG_STRING], certfile[LONG_STRING];
-  char tempfile[_POSIX_PATH_MAX], smimeerrfile[_POSIX_PATH_MAX];
-  char smimeinfile[_POSIX_PATH_MAX];
+  char tempfile[PATH_MAX], smimeerrfile[PATH_MAX];
+  char smimeinfile[PATH_MAX];
   char *cert_start, *cert_end;
   FILE *smimein = NULL;
   int err = 0, empty, off;
@@ -1527,7 +1527,7 @@ static char *openssl_md_to_smime_micalg(char *md)
 struct Body *smime_sign_message(struct Body *a)
 {
   char buffer[LONG_STRING];
-  char signedfile[_POSIX_PATH_MAX], filetosign[_POSIX_PATH_MAX];
+  char signedfile[PATH_MAX], filetosign[PATH_MAX];
   FILE *smimein = NULL, *smimeout = NULL, *smimeerr = NULL, *sfp = NULL;
   int err = 0;
   int empty = 0;
@@ -1681,7 +1681,7 @@ static pid_t smime_invoke_decrypt(FILE **smimein, FILE **smimeout,
 
 int smime_verify_one(struct Body *sigbdy, struct State *s, const char *tempfile)
 {
-  char signedfile[_POSIX_PATH_MAX], smimeerrfile[_POSIX_PATH_MAX];
+  char signedfile[PATH_MAX], smimeerrfile[PATH_MAX];
   FILE *smimeout = NULL;
   pid_t thepid;
   int badsig = -1;
@@ -1792,8 +1792,8 @@ int smime_verify_one(struct Body *sigbdy, struct State *s, const char *tempfile)
  */
 static struct Body *smime_handle_entity(struct Body *m, struct State *s, FILE *out_file)
 {
-  char outfile[_POSIX_PATH_MAX], errfile[_POSIX_PATH_MAX];
-  char tmpfname[_POSIX_PATH_MAX];
+  char outfile[PATH_MAX], errfile[PATH_MAX];
+  char tmpfname[PATH_MAX];
   FILE *smimeout = NULL, *smimein = NULL, *smimeerr = NULL;
   FILE *tmpfp = NULL, *tmpfp_buffer = NULL, *fpout = NULL;
   struct stat info;
@@ -1905,7 +1905,7 @@ static struct Body *smime_handle_entity(struct Body *m, struct State *s, FILE *o
     fflush(smimeout);
     rewind(smimeout);
 
-    char tmptmpfname[_POSIX_PATH_MAX];
+    char tmptmpfname[PATH_MAX];
     if (out_file)
       fpout = out_file;
     else
@@ -1995,7 +1995,7 @@ static struct Body *smime_handle_entity(struct Body *m, struct State *s, FILE *o
 
 int smime_decrypt_mime(FILE *fpin, FILE **fpout, struct Body *b, struct Body **cur)
 {
-  char tempfile[_POSIX_PATH_MAX];
+  char tempfile[PATH_MAX];
   struct State s;
   LOFF_T tmpoffset = b->offset;
   size_t tmplength = b->length;

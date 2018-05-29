@@ -821,7 +821,7 @@ int main(int argc, char *const argv[])
   short secring = 0;
 
   const char *tmp_kring = NULL;
-  char kring[_POSIX_PATH_MAX];
+  char kring[PATH_MAX];
 
   while ((c = getopt(argc, argv, "f25sk:S")) != EOF)
   {
@@ -872,7 +872,7 @@ int main(int argc, char *const argv[])
   else
   {
     const char *env_home = NULL;
-    char pgppath[_POSIX_PATH_MAX];
+    char pgppath[PATH_MAX];
     const char *env_pgppath = mutt_str_getenv("PGPPATH");
     if (env_pgppath)
       mutt_str_strfcpy(pgppath, env_pgppath, sizeof(pgppath));
