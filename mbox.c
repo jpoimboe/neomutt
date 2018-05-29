@@ -954,7 +954,7 @@ static int mbox_sync_mailbox(struct Context *ctx, int *index_hint)
   struct MUpdate *old_offset = NULL;
   FILE *fp = NULL;
   struct Progress progress;
-  char msgbuf[STRING];
+  char msgbuf[PATH_MAX + 64];
   struct Buffy *tmp = NULL;
 
   /* sort message by their position in the mailbox on disk */
