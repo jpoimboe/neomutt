@@ -380,7 +380,7 @@ static int mh_mkstemp(struct Context *dest, FILE **fp, char **tgt)
   omask = umask(mh_umask(dest));
   while (true)
   {
-    snprintf(path, _POSIX_PATH_MAX, "%s/.neomutt-%s-%d-%" PRIu64, dest->path,
+    snprintf(path, sizeof(path), "%s/.neomutt-%s-%d-%" PRIu64, dest->path,
              NONULL(ShortHostname), (int) getpid(), mutt_rand64());
     fd = open(path, O_WRONLY | O_EXCL | O_CREAT, 0666);
     if (fd == -1)
@@ -1514,7 +1514,7 @@ static int maildir_open_new_message(struct Message *msg, struct Context *dest,
   omask = umask(mh_umask(dest));
   while (true)
   {
-    snprintf(path, _POSIX_PATH_MAX, "%s/tmp/%s.%lld.R%" PRIu64 ".%s%s", dest->path, subdir,
+    snprintf(path, sizeof(path), "%s/tmp/%s.%lld.R%" PRIu64 ".%s%s", dest->path, subdir,
              (long long) time(NULL), mutt_rand64(), NONULL(ShortHostname), suffix);
 
     mutt_debug(2, "Trying %s.\n", path);
@@ -1597,9 +1597,9 @@ static int md_commit_message(struct Context *ctx, struct Message *msg, struct He
   /* construct a new file name. */
   while (true)
   {
-    snprintf(path, _POSIX_PATH_MAX, "%s/%lld.R%" PRIu64 ".%s%s", subdir,
+    snprintf(path, sizeof(path), "%s/%lld.R%" PRIu64 ".%s%s", subdir,
              (long long) time(NULL), mutt_rand64(), NONULL(ShortHostname), suffix);
-    snprintf(full, _POSIX_PATH_MAX, "%s/%s", ctx->path, path);
+    snprintf(full, sizeof(full), "%s/%s", ctx->path, path);
 
     mutt_debug(2, "renaming %s to %s.\n", msg->path, full);
 
@@ -1760,8 +1760,8 @@ static int mh_rewrite_message(struct Context *ctx, int msgno)
   {
     char oldpath[_POSIX_PATH_MAX];
     char partpath[_POSIX_PATH_MAX];
-    snprintf(oldpath, _POSIX_PATH_MAX, "%s/%s", ctx->path, h->path);
-    mutt_str_strfcpy(partpath, h->path, _POSIX_PATH_MAX);
+    snprintf(oldpath, sizeof(oldpath), "%s/%s", ctx->path, h->path);
+    mutt_str_strfcpy(partpath, h->path, sizeof(partpath));
 
     if (ctx->magic == MUTT_MAILDIR)
       rc = md_commit_message(ctx, dest, h);
@@ -1794,7 +1794,7 @@ static int mh_rewrite_message(struct Context *ctx, int msgno)
     if (ctx->magic == MUTT_MH && rc == 0)
     {
       char newpath[_POSIX_PATH_MAX];
-      snprintf(newpath, _POSIX_PATH_MAX, "%s/%s", ctx->path, h->path);
+      snprintf(newpath, sizeof(newpath), "%s/%s", ctx->path, h->path);
       rc = mutt_file_safe_rename(newpath, oldpath);
       if (rc == 0)
         mutt_str_replace(&h->path, partpath);
